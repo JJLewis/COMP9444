@@ -19,7 +19,7 @@ def simple_addition(x, y):
     """
     TODO: Implement a simple addition function that accepts two tensors and returns the result.
     """
-    return x + y
+    return torch.add(x, y)
 
 
 # Resize tensors
@@ -46,7 +46,7 @@ def simple_transpose(x):
     TODO: Implement a function that swaps the first dimension and
         the second dimension of the given matrix x and returns the result.
     """
-    return x.T
+    return torch.t(x)
 
 
 def simple_permute(x, order):
@@ -72,7 +72,7 @@ def simple_matrix_mul(x, y):
     TODO: Implement a function that performs a matrix multiplication
         of two given rank 2 tensors and returns the result.
     """
-    return x * y
+    return x.mm(y)
 
 
 def broadcastable_matrix_mul(x, y):
@@ -80,7 +80,7 @@ def broadcastable_matrix_mul(x, y):
     TODO: Implement a function that computes the matrix product of two tensors and returns the result.
         The function needs to be broadcastable.
     """
-    return x * y
+    return x.matmul(y)
 
 
 # Concatenate and stack.
