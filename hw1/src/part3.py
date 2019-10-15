@@ -43,6 +43,8 @@ class FeedForward(nn.Module):
     TODO: Implement the following network structure
     Linear (256) -> ReLU -> Linear(64) -> ReLU -> Linear(10) -> ReLU-> LogSoftmax
     """
+    def __init__(self):
+        super().__init__()
 
 
 class CNN(nn.Module):
@@ -83,8 +85,8 @@ class NNModel:
         TODO: Set appropriate loss function such that learning is equivalent to minimizing the
         cross entropy loss. Note that we are outputting log-softmax values from our networks,
         not raw softmax values, so just using torch.nn.CrossEntropyLoss is incorrect.
-        
-        Hint: All networks output log-softmax values (i.e. log probabilities or.. likelihoods.). 
+
+        Hint: All networks output log-softmax values (i.e. log probabilities or.. likelihoods.).
         """
         self.lossfn = None
         self.optimizer = optim.Adam(self.model.parameters(), lr=learning_rate)
@@ -104,6 +106,9 @@ class NNModel:
 
            2) An int 8x8 numpy array of labels corresponding to this tiling
         """
+        images, labels = next(iter(self.trainloader))
+        img = torch.cat([torch.cat([torch.tensor(g) for g in row.tolist()], 1) for row in images.reshape(8,8,28,28)], 0)
+        return (img, labels.view(8,8))
 
     def train_step(self):
         """
