@@ -76,7 +76,7 @@ class LinearModel:
 
         We take advantage of the simplification shown in Lecture 2b, slide 23,
         to compute the gradient directly from the differential or difference
-        dE/ds = z - t (which is passed in as diff)
+        -dE/ds = t - z (which is passed in as diff)
 
         The resulting weight update should look essentially the same as for the
         Perceptron Learning Rule (shown in Lectures 1c, slide 11) except that

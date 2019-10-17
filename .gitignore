@@ -1,5 +1,6 @@
 .DS_Store
 hw1/src/data
+hw1/src/*.png
 
 # Byte-compiled / optimized / DLL files
 __pycache__/
