@@ -72,10 +72,20 @@ class CNN(nn.Module):
     """
     def __init__(self):
         super().__init__()
+        # (Batch Size, Channels, Height, Width)
+        # Input to conv1 (64, 1, 28, 28)
+        # Output from conv1 (64, 10, (1+(28-5))/1=24, (1+(28-5))/1=24))
+        # Input to pool (64, 10, 24, 24)
+        # Output from pool (64, 10, 12, 12)
+        # Input to conv2 (64, 10, 12, 12)
+        # Output from conv2 (64, 50, (1+(12-5))/1=8, (1+(12-5))/1=8))
+        # Input to pool (64, 50, 8, 8)
+        # Output from pool (64, 50, 4, 4)
+        # Input to fc1 (64, 50*4*4=800)
         self.conv1 = nn.Conv2d(1, 10, 5, stride=1)
         self.conv2 = nn.Conv2d(10, 50, 5, stride=1)
         self.pool = nn.MaxPool2d(2)
-        self.fc1 = nn.Linear(800, 256) # (50*4*4 how tho, 256)
+        self.fc1 = nn.Linear(50 * 4 * 4, 256)
         self.fc2 = nn.Linear(256, 10)
 
     def forward(self, x):
