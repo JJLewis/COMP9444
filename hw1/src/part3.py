@@ -70,6 +70,22 @@ class CNN(nn.Module):
     Hint: You will need to reshape outputs from the last conv layer prior to feeding them into
     the linear layers.
     """
+    def __init__(self):
+        super().__init__()
+        self.conv1 = nn.Conv2d(1, 10, 5, stride=1)
+        self.conv2 = nn.Conv2d(10, 50, 5, stride=1)
+        self.pool = nn.MaxPool2d(2, 2)
+        self.fc1 = nn.Linear(50*5*5, 256)
+        self.fc2 = nn.Linear(256, 10)
+
+    def forward(self, x):
+        x = self.pool(F.relu(self.conv1(x)))
+        x = self.pool(F.relu(self.conv2(x)))
+        x = x.view(x.shape[0], -1)
+        x = F.relu(self.fc1(x))
+        x = F.relu(self.fc2(x))
+        x = F.log_softmax(x, dim=1)
+        return x
 
 class NNModel:
     def __init__(self, network, learning_rate):
