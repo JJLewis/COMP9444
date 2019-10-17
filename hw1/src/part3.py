@@ -50,6 +50,7 @@ class FeedForward(nn.Module):
         self.fc3 = nn.Linear(64, 10)
 
     def forward(self, x):
+        x = x.view(x.shape[0], -1) # make sure inputs are flattened
         x = F.relu(self.fc1(x))
         x = F.relu(self.fc2(x))
         x = F.relu(self.fc3(x))
