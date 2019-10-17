@@ -85,7 +85,7 @@ class LinearModel:
 
         Note: Numpy arrays are passed by reference and can be modified in-place
         """
-        self.weights += np.concatenate((inputs, [1])) * diff
+        self.weights += np.concatenate((inputs, [1])) * diff * self.lr
 
 
     def plot(self, inputs, marker):
