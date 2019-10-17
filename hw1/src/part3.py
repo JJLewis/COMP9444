@@ -108,7 +108,7 @@ class NNModel:
         """
         images, labels = next(iter(self.trainloader))
         img = torch.cat([torch.cat([torch.tensor(g) for g in row.tolist()], 1) for row in images.reshape(8,8,28,28)], 0)
-        return (img, labels.view(8,8))
+        return (img, np.asarray(labels.view(8,8)))
 
     def train_step(self):
         """
