@@ -125,7 +125,7 @@ class NNModel:
 
         Hint: All networks output log-softmax values (i.e. log probabilities or.. likelihoods.).
         """
-        self.lossfn = nn.modules.loss.NLLLoss()
+        self.lossfn = F.nll_loss
         self.optimizer = optim.Adam(self.model.parameters(), lr=learning_rate)
 
         self.num_train_samples = len(self.trainloader)
