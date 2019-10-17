@@ -99,7 +99,7 @@ class NNModel:
 
         Hint: All networks output log-softmax values (i.e. log probabilities or.. likelihoods.).
         """
-        self.lossfn = F.log_softmax
+        self.lossfn = nn.modules.loss.NLLLoss()
         self.optimizer = optim.Adam(self.model.parameters(), lr=learning_rate)
 
         self.num_train_samples = len(self.trainloader)
@@ -188,7 +188,7 @@ def main():
     images, labels = NNModel(Linear(), 0.003).view_batch()
     print(labels)
     plt.imshow(images, cmap="Greys")
-    plt.show()
+    # TODO: uncomment plt.show()
 
     for model in models:
         print(f"Training {model.__class__.__name__}...")
