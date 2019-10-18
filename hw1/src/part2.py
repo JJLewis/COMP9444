@@ -41,7 +41,9 @@ class LinearModel:
         a float, but raises a Value error if a boolean, list or numpy array is passed in
         hint: consider np.exp()
         """
-        return 1/(1 + np.exp(-x))
+        if type(x) in [list, bool] or isinstance(x, np.ndarray): # this covers np.matrix
+            raise ValueError("activation function doesn't accept list, bool, or np.array")
+        return 1.0/(1.0 + np.exp(-x))
 
     def forward(self, inputs):
         """
