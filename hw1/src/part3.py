@@ -93,7 +93,7 @@ class CNN(nn.Module):
         x = self.pool(F.relu(self.conv2(x)))
         x = x.view(-1, x.shape[1] * x.shape[2] * x.shape[3])
         x = F.relu(self.fc1(x))
-        x = F.relu(self.fc2(x))
+        x = self.fc2(x)
         x = F.log_softmax(x, dim=1)
         return x
 
@@ -207,7 +207,6 @@ def plot_result(results, names):
 
 def main():
     models = [Linear(), FeedForward(), CNN()]  # Change during development
-    models = [CNN()]
     epochs = 10
     results = []
 
@@ -215,7 +214,7 @@ def main():
     images, labels = NNModel(Linear(), 0.003).view_batch()
     print(labels)
     plt.imshow(images, cmap="Greys")
-    # TODO: uncomment plt.show()
+    plt.show()
 
     for model in models:
         print(f"Training {model.__class__.__name__}...")
