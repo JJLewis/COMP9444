@@ -144,8 +144,10 @@ class NNModel:
            2) An int 8x8 numpy array of labels corresponding to this tiling
         """
         images, labels = next(iter(self.trainloader))
-        img = torch.cat([torch.cat([torch.tensor(g) for g in row.tolist()], 1) for row in images.reshape(8,8,28,28)], 0)
-        return (img, np.asarray(labels.view(8,8)))
+        #img_grid = torch.cat([torch.cat([torch.tensor(col) for col in row.tolist()], 1) for row in images.reshape(8,8,28,28)], 0)
+        img_grid = np.concatenate(np.concatenate(np.array(images).reshape(8,8,28,28), axis=1), axis=1)
+        label_grid = np.array(labels.view(8,8))
+        return (img_grid, label_grid)
 
     def train_step(self):
         """
