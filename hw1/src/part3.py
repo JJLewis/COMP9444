@@ -146,7 +146,7 @@ class NNModel:
         images, labels = next(iter(self.trainloader))
         #img_grid = torch.cat([torch.cat([torch.tensor(col) for col in row.tolist()], 1) for row in images.reshape(8,8,28,28)], 0)
         img_grid = np.concatenate(np.concatenate(np.array(images).reshape(8,8,28,28), axis=1), axis=1)
-        label_grid = np.array(labels.view(8,8))
+        label_grid = np.array(labels).reshape(8,8)
         return (img_grid, label_grid)
 
     def train_step(self):
