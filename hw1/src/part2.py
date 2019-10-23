@@ -60,6 +60,9 @@ class LinearModel:
         TODO: Return the cross entropy for the given prediction and label
         hint: consider using np.log()
         """
+        # -label * np.log(prediction) - (1 - label) * np.log(1 - prediction)
+        # -np.log(prediction) if label == 1 else -np.log(1 - prediction)
+        # 0.0 if prediction == label else (-np.log(prediction) if label == 1 else -np.log(1 - prediction))
         return -label * np.log(prediction) - (1 - label) * np.log(1 - prediction)
 
     @staticmethod
