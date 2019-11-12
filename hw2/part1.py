@@ -32,7 +32,7 @@ class rnn(torch.nn.Module):
         """
         i = self.ih(input)
         h = self.hh(hidden)
-        return torch.tanh(i + h) 
+        return torch.tanh(i + h)
 
     def forward(self, input):
         hidden = torch.zeros(128)
