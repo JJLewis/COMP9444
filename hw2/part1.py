@@ -44,11 +44,9 @@ class rnn(torch.nn.Module):
               Return the final hidden state after the
               last input in the sequence has been processed.
         """
-        print(input.shape)
         for i in range(input.shape[0]):
             hidden = self.rnnCell(input[i], hidden)
-
-        return torch.tanh(hidden)
+        return hidden
 
 class rnnSimplified(torch.nn.Module):
 
