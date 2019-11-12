@@ -2,6 +2,11 @@
 hw1/src/data
 hw1/src/*.png
 
+# Ignoring any data stuff as it's big, unzip the hw2.zip to get it back
+hw2.zip # too big
+hw2/data/*
+hw2/.vector_cache
+
 # Byte-compiled / optimized / DLL files
 __pycache__/
 *.py[cod]
