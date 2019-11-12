@@ -30,13 +30,9 @@ class rnn(torch.nn.Module):
               some input (inputDim = 64) and the current hidden state
               (hiddenDim = 128), and return the new hidden state.
         """
-        tanh = torch.nn.functional.tanh
-
-        i = tanh(self.ih(input))
-        both = i + hidden
-        h = self.hh(both)
-
-        return h
+        i = self.ih(input)
+        h = self.hh(hidden)
+        return torch.tanh(i + h) 
 
     def forward(self, input):
         hidden = torch.zeros(128)
@@ -52,7 +48,7 @@ class rnn(torch.nn.Module):
         for i in range(input.shape[0]):
             hidden = self.rnnCell(input[i], hidden)
 
-        return torch.nn.functional.tanh(hidden)
+        return torch.tanh(hidden)
 
 class rnnSimplified(torch.nn.Module):
 
