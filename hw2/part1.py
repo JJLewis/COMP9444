@@ -57,7 +57,8 @@ class rnnSimplified(torch.nn.Module):
               the network defined by this class is equivalent to the
               one defined in class "rnn".
         """
-        self.net = None
+        #self.net = torch.nn.modules.RNNBase('RNN_TANH', 64, 128, 1, False)
+        self.net = torch.nn.RNN(64, 128)
 
     def forward(self, input):
         _, hidden = self.net(input)
