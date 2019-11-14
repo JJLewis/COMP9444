@@ -40,6 +40,10 @@ class NetworkLstm(tnn.Module):
         TODO:
         Create and initialise weights and biases for the layers.
         """
+        self.lstm = tnn.LSTM(50, 100, batch_first=True)
+        self.fc1 = tnn.Linear(100, 64)
+        self.relu = tnn.ReLU()
+        self.fc2 = tnn.Linear(64, 1)
 
     def forward(self, input, length):
         """
@@ -47,6 +51,28 @@ class NetworkLstm(tnn.Module):
         TODO:
         Create the forward pass through the network.
         """
+        tp = True
+        if tp:
+            print("length: ", length)
+            print("input.shape:", input.shape)
+        y, (hn, cn) = self.lstm(input)
+        if tp:
+            print("y.shape:", y.shape)
+        # batch, seq_len, hidden
+
+        y = y[:,-1,:]
+        if tp:
+            print("y.shape:", y.shape)
+        y = self.fc1(y)
+        if tp:
+            print("after fc1: ", y.shape)
+        y = self.relu(y)
+        if tp:
+            print("after relu: ", y.shape)
+        y = self.fc2(y)
+        if tp:
+            print("after fc2: ", y.shape)
+        return y
 
 
 # Class for creating the neural network.
@@ -88,6 +114,7 @@ def lossFunc():
     will add a sigmoid to the output and calculate the binary
     cross-entropy.
     """
+    return tnn.BCEWithLogitsLoss()
 
 
 def measures(outputs, labels):
@@ -99,6 +126,28 @@ def measures(outputs, labels):
 
     outputs and labels are torch tensors.
     """
+    """
+    True positives are positive reviews correctly identified as positive.
+    True negatives are negative reviews correctly identified as negative.
+    False positives are negative reviews incorrectly identified as positive.
+    False negatives are postitive reviews incorrectly identified as negative.
+    """
+    # [1,1,0,0]
+    # [1,0,1,0]
+    # [tp, fn, fp, tn]
+    tp, tn, fp, fn = (0, 0, 0, 0)
+    for y_hat, y in zip(outputs, labels):
+        if y_hat == y:
+            if y == 1:
+                tp += 1
+            else:
+                tn += 1
+        else:
+            if y_hat == 1:
+                fp += 1
+            else:
+                fn += 1
+    return (tp, tn, fp, fn)
 
 
 def main():
