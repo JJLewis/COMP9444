@@ -60,7 +60,7 @@ class NetworkLstm(tnn.Module):
             print("y.shape:", y.shape)
         # batch, seq_len, hidden
         # pick out the last relevant hidden layer for the item in the batch
-        y = torch.stack([y[i,s-1,:] for i,s in enumerate(length)])
+        y = y[range(y.shape[0]), length, :]
         if tp:
             print("y.shape:", y.shape)
         y = self.fc1(y)
