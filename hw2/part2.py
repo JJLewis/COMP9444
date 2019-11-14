@@ -51,7 +51,7 @@ class NetworkLstm(tnn.Module):
         TODO:
         Create the forward pass through the network.
         """
-        tp = True
+        tp = False
         if tp:
             print("length: ", length)
             print("input.shape:", input.shape)
@@ -59,8 +59,8 @@ class NetworkLstm(tnn.Module):
         if tp:
             print("y.shape:", y.shape)
         # batch, seq_len, hidden
-
-        y = y[:,-1,:]
+        # pick out the last relevant hidden layer for the item in the batch
+        y = torch.stack([y[i,s-1,:] for i,s in enumerate(length)])
         if tp:
             print("y.shape:", y.shape)
         y = self.fc1(y)
@@ -72,7 +72,7 @@ class NetworkLstm(tnn.Module):
         y = self.fc2(y)
         if tp:
             print("after fc2: ", y.shape)
-        return y
+        return y.flatten()
 
 
 # Class for creating the neural network.
