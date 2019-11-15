@@ -60,7 +60,8 @@ class NetworkLstm(tnn.Module):
             print("y.shape:", y.shape)
         # batch, seq_len, hidden
         # pick out the last relevant hidden layer for the item in the batch
-        y = y[range(y.shape[0]), length, :]
+        #y = y[range(y.shape[0]), length, :] # try making this hn for the next test
+        y = hn
         if tp:
             print("y.shape:", y.shape)
         y = self.fc1(y)
@@ -136,14 +137,15 @@ def measures(outputs, labels):
     # [1,0,1,0]
     # [tp, fn, fp, tn]
     tp, tn, fp, fn = (0, 0, 0, 0)
-    for y_hat, y in zip(outputs, labels):
-        if y_hat == y:
+    true_for_positive = outputs > 0
+    for y_hat, y in zip(true_for_positive, labels):
+        if y_hat == bool(y):
             if y == 1:
                 tp += 1
             else:
                 tn += 1
         else:
-            if y_hat == 1:
+            if y == 0:
                 fp += 1
             else:
                 fn += 1
