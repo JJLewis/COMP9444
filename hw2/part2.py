@@ -99,11 +99,11 @@ class NetworkCnn(tnn.Module):
         TODO:
         Create and initialise weights and biases for the layers.
         """
-        self.conv = tnn.Conv1d(50, 50, kernel_size=8, padding=5) # https://pytorch.org/docs/stable/nn.html#conv1d for output size
+        self.conv = tnn.Conv1d(50, 50, kernel_size=8, padding=5)
         self.relu = tnn.ReLU()
-        self.mp = tnn.MaxPool1d(4) # https://pytorch.org/docs/stable/nn.html#maxpool1d for output size
-        self.mpot = tnn.MaxPool1d(999)
-        self.fc = tnn.Linear(999, 1)
+        self.mp = tnn.MaxPool1d(4)
+        self.mpot = tnn.AdaptiveMaxPool1d(1)
+        self.fc = tnn.Linear(50, 1)
 
     def forward(self, input, length):
         """
@@ -111,17 +111,39 @@ class NetworkCnn(tnn.Module):
         TODO:
         Create the forward pass through the network.
         """
-        X = input
+        # input = batch, sentence length, embed dim
+        X = input.permute((0,2,1)) #1,2,0?
+        tp = False
+        if tp:
+            print(X.shape)
         X = self.conv(X)
+        if tp:
+            print(X.shape)
+        X = self.relu(X)
+        if tp:
+            print(X.shape)
+        X = self.mp(X)
+        if tp:
+            print(X.shape)
+        X = self.conv(X)
+        if tp:
+            print(X.shape)
         X = self.relu(X)
         X = self.mp(X)
+        if tp:
+            print(X.shape)
         X = self.conv(X)
+        if tp:
+            print(X.shape)
         X = self.relu(X)
-        X = self.mp(X)
-        X = self.conv(X)
-        X = self.relu(X)
-        X = self.mpot(X)
-        X = self.fc(X)
+        if tp:
+            print(X.shape)
+        X = self.mpot(X).squeeze()
+        if tp:
+            print('mpot:',X.shape)
+        X = self.fc(X).squeeze()
+        if tp:
+            print(X.shape)
         return X
 
 
