@@ -55,13 +55,14 @@ class NetworkLstm(tnn.Module):
         if tp:
             print("length: ", length)
             print("input.shape:", input.shape)
-        y, (hn, cn) = self.lstm(input)
-        if tp:
-            print("y.shape:", y.shape)
+        packed = tnn.utils.rnn.pack_padded_sequence(input, length, batch_first=True)
+        y, (hn, cn) = self.lstm(packed)
         # batch, seq_len, hidden
         # pick out the last relevant hidden layer for the item in the batch
         #y = y[range(y.shape[0]), length-1, :] # try making this hn for the next test
         y = hn
+        if tp:
+            print("y.shape:", y.shape)
         if tp:
             print("y.shape:", y.shape)
         y = self.fc1(y)
@@ -73,7 +74,7 @@ class NetworkLstm(tnn.Module):
         y = self.fc2(y)
         if tp:
             print("after fc2: ", y.shape)
-        return y.flatten()
+        return y.squeeze()
 
 
 # Class for creating the neural network.
