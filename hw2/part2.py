@@ -60,7 +60,7 @@ class NetworkLstm(tnn.Module):
             print("y.shape:", y.shape)
         # batch, seq_len, hidden
         # pick out the last relevant hidden layer for the item in the batch
-        #y = y[range(y.shape[0]), length, :] # try making this hn for the next test
+        #y = y[range(y.shape[0]), length-1, :] # try making this hn for the next test
         y = hn
         if tp:
             print("y.shape:", y.shape)
