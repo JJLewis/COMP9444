@@ -12,12 +12,35 @@ from imdb_dataloader import IMDB
 class Network(tnn.Module):
     def __init__(self):
         super(Network, self).__init__()
+        self.lstm = tnn.LSTM(50, 100, batch_first=True)
+        self.fc1 = tnn.Linear(100, 64)
+        self.relu = tnn.ReLU()
+        self.fc2 = tnn.Linear(64, 1)
 
     def forward(self, input, length):
         """
         DO NOT MODIFY FUNCTION SIGNATURE
         Create the forward pass through the network.
         """
+        tp = False
+        if tp:
+            print("length: ", length)
+            print("input.shape:", input.shape)
+        packed = tnn.utils.rnn.pack_padded_sequence(input, length, batch_first=True)
+        y, (hn, cn) = self.lstm(packed)
+        y = hn
+        if tp:
+            print("y.shape:", y.shape)
+        y = self.fc1(y)
+        if tp:
+            print("after fc1: ", y.shape)
+        y = self.relu(y)
+        if tp:
+            print("after relu: ", y.shape)
+        y = self.fc2(y)
+        if tp:
+            print("after fc2: ", y.shape)
+        return y.squeeze()
 
 
 class PreProcessing():
@@ -37,6 +60,7 @@ def lossFunc():
     Define a loss function appropriate for the above networks that will
     add a sigmoid to the output and calculate the binary cross-entropy.
     """
+    return tnn.BCEWithLogitsLoss()
 
 def main():
     # Use a GPU if available, as it should be faster.
