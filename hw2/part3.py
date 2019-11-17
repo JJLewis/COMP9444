@@ -50,7 +50,7 @@ class PreProcessing():
 
     def post(batch, vocab):
         """Called after numericalization but prior to vectorization"""
-        return batch, vocab
+        return batch
 
     text_field = data.Field(lower=True, include_lengths=True, batch_first=True, preprocessing=pre, postprocessing=post)
 
