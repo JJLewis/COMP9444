@@ -40,10 +40,10 @@ class NetworkLstm(tnn.Module):
         TODO:
         Create and initialise weights and biases for the layers.
         """
-        self.lstm = tnn.LSTM(50, 100, batch_first=True)
+        self.ltsm = tnn.LSTM(input_size=50, hidden_size=100, batch_first=True)
         self.fc1 = tnn.Linear(100, 64)
-        self.relu = tnn.ReLU()
         self.fc2 = tnn.Linear(64, 1)
+        self.relu = tnn.ReLU()
 
     def forward(self, input, length):
         """
@@ -51,30 +51,14 @@ class NetworkLstm(tnn.Module):
         TODO:
         Create the forward pass through the network.
         """
-        tp = False
-        if tp:
-            print("length: ", length)
-            print("input.shape:", input.shape)
-        packed = tnn.utils.rnn.pack_padded_sequence(input, length, batch_first=True)
-        y, (hn, cn) = self.lstm(packed)
-        # batch, seq_len, hidden
-        # pick out the last relevant hidden layer for the item in the batch
-        #y = y[range(y.shape[0]), length-1, :] # try making this hn for the next test
-        y = hn
-        if tp:
-            print("y.shape:", y.shape)
-        if tp:
-            print("y.shape:", y.shape)
-        y = self.fc1(y)
-        if tp:
-            print("after fc1: ", y.shape)
-        y = self.relu(y)
-        if tp:
-            print("after relu: ", y.shape)
-        y = self.fc2(y)
-        if tp:
-            print("after fc2: ", y.shape)
-        return y.squeeze()
+        packed_embedded = tnn.utils.rnn.pack_padded_sequence(input, length, batch_first=True)
+
+        output, (hidden, cell) = self.ltsm(packed_embedded)
+        x = self.fc1(hidden)
+        x = self.relu(x)
+        x = self.fc2(x).squeeze()
+
+        return x
 
 
 # Class for creating the neural network.
@@ -100,11 +84,13 @@ class NetworkCnn(tnn.Module):
         TODO:
         Create and initialise weights and biases for the layers.
         """
-        self.conv = tnn.Conv1d(50, 50, kernel_size=8, padding=5)
-        self.relu = tnn.ReLU()
-        self.mp = tnn.MaxPool1d(4)
+        self.conv1 = tnn.Conv1d(in_channels=50, out_channels=50, kernel_size=8, padding=5)
+        self.conv2 = tnn.Conv1d(in_channels=50, out_channels=50, kernel_size=8, padding=5)
+        self.conv3 = tnn.Conv1d(in_channels=50, out_channels=50, kernel_size=8, padding=5)
+        self.mp1 = tnn.MaxPool1d(4)
         self.mpot = tnn.AdaptiveMaxPool1d(1)
-        self.fc = tnn.Linear(50, 1)
+        self.fc1 = tnn.Linear(50, 1)
+
 
     def forward(self, input, length):
         """
@@ -112,41 +98,15 @@ class NetworkCnn(tnn.Module):
         TODO:
         Create the forward pass through the network.
         """
-        # input = batch, sentence length, embed dim
-        X = input.permute((0,2,1)) #1,2,0?
-        tp = False
-        if tp:
-            print(X.shape)
-        X = self.conv(X)
-        if tp:
-            print(X.shape)
-        X = self.relu(X)
-        if tp:
-            print(X.shape)
-        X = self.mp(X)
-        if tp:
-            print(X.shape)
-        X = self.conv(X)
-        if tp:
-            print(X.shape)
-        X = self.relu(X)
-        X = self.mp(X)
-        if tp:
-            print(X.shape)
-        X = self.conv(X)
-        if tp:
-            print(X.shape)
-        X = self.relu(X)
-        if tp:
-            print(X.shape)
-        X = self.mpot(X).squeeze()
-        if tp:
-            print('mpot:',X.shape)
-        X = self.fc(X).squeeze()
-        if tp:
-            print(X.shape)
-        return X
-
+        x = input.permute((0, 2, 1))
+        x = torch.relu(self.conv1(x))
+        x = self.mp1(x)
+        x = torch.relu(self.conv2(x))
+        x = self.mp1(x)
+        x = torch.relu(self.conv3(x))
+        x = self.amp1(x).squeeze()
+        x = self.fc1(x).squeeze()
+        return x
 
 def lossFunc():
     """
@@ -176,15 +136,15 @@ def measures(outputs, labels):
     # [1,1,0,0]
     # [1,0,1,0]
     # [tp, fn, fp, tn]
-    tp, tn, fp, fn = (0, 0, 0, 0)
-    true_for_positive = outputs > 0
+    tp, tn, fp, fn = 0, 0, 0, 0
+    true_for_positive = outputs >= 0
     for y_hat, y in zip(true_for_positive, labels):
-        if y_hat == bool(y):
+        if y_hat == bool(y): # True results
             if y == 1:
                 tp += 1
             else:
                 tn += 1
-        else:
+        else: # Wrong results
             if y == 0:
                 fp += 1
             else:
