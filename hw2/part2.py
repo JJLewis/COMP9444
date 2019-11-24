@@ -104,7 +104,7 @@ class NetworkCnn(tnn.Module):
         x = torch.relu(self.conv2(x))
         x = self.mp1(x)
         x = torch.relu(self.conv3(x))
-        x = self.amp1(x).squeeze()
+        x = self.mpot(x).squeeze()
         x = self.fc1(x).squeeze()
         return x
 
@@ -137,7 +137,7 @@ def measures(outputs, labels):
     # [1,0,1,0]
     # [tp, fn, fp, tn]
     tp, tn, fp, fn = 0, 0, 0, 0
-    true_for_positive = outputs >= 0
+    true_for_positive = outputs > 0
     for y_hat, y in zip(true_for_positive, labels):
         if y_hat == bool(y): # True results
             if y == 1:
