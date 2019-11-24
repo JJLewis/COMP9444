@@ -178,6 +178,9 @@ def main():
 
     train, dev = IMDB.splits(textField, labelField, train="train", validation="dev")
 
+    # Use everything
+    train.examples += dev.examples
+
     # Augment
     m = more(train, 0.2, 0.2, 5)
     train.examples += m
@@ -196,7 +199,7 @@ def main():
     acc = []
     epo = []
 
-    for epoch in range(10): # we saved our model at each epoch and chose to submit the one at epoch 6
+    for epoch in range(20):
         running_loss = 0
 
         for i, batch in enumerate(trainLoader):
